@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Aadhaar System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .battery-icon {
+            font-size: 4em;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .view-data-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .view-data-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .data-field {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .data-field label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .data-field input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .data-field input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        .data-field input:disabled {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .update-btn, .cancel-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .update-btn {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .cancel-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="battery-icon">🔋</div>
+        <h1>Battery Aadhaar</h1>
+        <p style="color: #666; margin-bottom: 30px; font-size: 18px;">
+            Digital Identity & Health Monitoring System
+        </p>
+        <button class="view-data-btn" onclick="openModal()">
+            View Dynamic Data
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div id="dataModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2><span class="status-indicator"></span>Battery Dynamic Data</h2>
+            
+            <div class="data-field">
+                <label for="category">Battery Category:</label>
+                <input type="text" id="category" value="Automotive" disabled>
+            </div>
+
+            <div class="data-field">
+                <label for="capacity">Rated Capacity:</label>
+                <input type="text" id="capacity" value="100Ah">
+            </div>
+
+            <div class="data-field">
+                <label for="status">Battery Status:</label>
+                <input type="text" id="status" value="Operational">
+            </div>
+
+            <div class="data-field">
+                <label for="soh">State Of Health (SOH):</label>
+                <input type="text" id="soh" value="90%">
+            </div>
+
+            <div class="button-group">
+                <button class="update-btn" onclick="updateData()">Update Data</button>
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
+
+            <div class="last-updated" id="lastUpdated">
+                Last Updated: Never
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store original values
+        let originalData = {
+            capacity: "100Ah",
+            status: "Operational",
+            soh: "90%"
+        };
+
+        // Function to get real IST time
+        function getISTTime() {
+            const now = new Date();
+            // Create IST time using proper timezone conversion
+            const istTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+            
+            // Format the time properly
+            const day = String(istTime.getDate()).padStart(2, '0');
+            const month = String(istTime.getMonth() + 1).padStart(2, '0');
+            const year = istTime.getFullYear();
+            const hours = String(istTime.getHours()).padStart(2, '0');
+            const minutes = String(istTime.getMinutes()).padStart(2, '0');
+            const seconds = String(istTime.getSeconds()).padStart(2, '0');
+            
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function openModal() {
+            document.getElementById('dataModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('dataModal').style.display = 'none';
+            // Reset to original values if cancelled
+            document.getElementById('capacity').value = originalData.capacity;
+            document.getElementById('status').value = originalData.status;
+            document.getElementById('soh').value = originalData.soh;
+        }
+
+        function updateData() {
+            // Show confirmation dialog for CSV download
+            const confirmDownload = confirm("Before updating, you must download the current data as CSV file. Click OK to proceed with download, or Cancel to abort the update.");
+            
+            if (!confirmDownload) {
+                alert("Update cancelled. CSV download is mandatory before updating data.");
+                return;
+            }
+
+            // Generate and download CSV
+            downloadCSV();
+
+            // Update the data
+            originalData.capacity = document.getElementById('capacity').value;
+            originalData.status = document.getElementById('status').value;
+            originalData.soh = document.getElementById('soh').value;
+
+            // Update last updated time in IST
+            const istTimeString = getISTTime();
+            document.getElementById('lastUpdated').innerHTML = `Last Updated: ${istTimeString} IST`;
+
+            alert("Data updated successfully!");
+            closeModal();
+        }
+
+        function downloadCSV() {
+            const istTimeString = getISTTime();
+            
+            const data = [
+                ['Field', 'Value'],
+                ['Battery Category', 'Automotive'],
+                ['Rated Capacity', document.getElementById('capacity').value],
+                ['Battery Status', document.getElementById('status').value],
+                ['State Of Health (SOH)', document.getElementById('soh').value],
+                ['Export Time (IST)', istTimeString + ' IST']
+            ];
+
+            let csvContent = '';
+            data.forEach(row => {
+                csvContent += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'battery_data_' + new Date().toISOString().slice(0,10) + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('dataModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
