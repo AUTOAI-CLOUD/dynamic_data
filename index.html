@@ -3,369 +3,611 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battery Aadhaar Dynamic</title>
+    <title>Battery Aadhaar Dynamic Data</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
-
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .role-btn {
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 3px solid #dee2e6;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .role-btn:hover {
+            border-color: #FF8C00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,140,0,0.3);
+        }
+        .role-btn.selected {
+            border-color: #32CD32;
+            background: linear-gradient(135deg, #FF8C00 0%, #FFFFFF 50%, #32CD32 100%);
+            color: white;
+        }
+        .credentials-form {
+            background: #f8f9fa;
+            border-left: 4px solid #FF8C00;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        .credentials-form.show { display: block; }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #FF8C00;
+        }
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+            display: none;
+            font-weight: bold;
+        }
+        .main-content {
+            display: none;
+        }
         .container {
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 40px;
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .battery-icon {
-            font-size: 4em;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-
-        .view-data-btn {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .view-data-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
             padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease;
-            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 20px;
-            top: 15px;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .modal h2 {
-            color: #333;
-            margin-bottom: 25px;
+        .header-section {
             text-align: center;
-            font-size: 2em;
+            margin-bottom: 30px;
         }
-
+        .role-badge {
+            background: linear-gradient(135deg, #FF8C00 0%, #32CD32 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        .info-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+            font-size: 14px;
+        }
         .data-field {
             margin-bottom: 20px;
-            text-align: left;
         }
-
         .data-field label {
             display: block;
             font-weight: bold;
             color: #555;
             margin-bottom: 8px;
-            font-size: 16px;
+            font-size: 15px;
         }
-
         .data-field input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            font-size: 15px;
+            transition: all 0.3s ease;
         }
-
         .data-field input:focus {
             outline: none;
             border-color: #4CAF50;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
         }
-
         .data-field input:disabled {
             background-color: #f5f5f5;
             color: #666;
             cursor: not-allowed;
         }
-
+        .data-field input:not(:disabled) {
+            background-color: #fffef0;
+            border-color: #4CAF50;
+        }
         .button-group {
             display: flex;
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
-
-        .update-btn, .cancel-btn {
+        .btn {
             padding: 12px 25px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: bold;
         }
-
         .update-btn {
             background: linear-gradient(45deg, #2196F3, #1976D2);
             color: white;
         }
-
         .update-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
         }
-
-        .cancel-btn {
+        .download-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .back-btn {
             background: #f44336;
             color: white;
         }
-
-        .cancel-btn:hover {
+        .back-btn:hover {
             background: #d32f2f;
             transform: translateY(-2px);
         }
-
         .last-updated {
             text-align: center;
             color: #666;
             font-size: 14px;
-            margin-top: 20px;
+            margin-top: 25px;
             font-style: italic;
         }
-
         .status-indicator {
             display: inline-block;
             width: 12px;
             height: 12px;
             border-radius: 50%;
             background-color: #4CAF50;
-            margin-right: 8px;
+            margin-right: 10px;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
-            0% { opacity: 1; }
+            0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        }
+        @media (max-width: 600px) {
+            .role-selection {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="battery-icon">🔋</div>
-        <h1>Battery Aadhaar - EULER 26.88 kWh</h1>
-        <p style="color: #666; margin-bottom: 30px; font-size: 18px;">
-            Digital Identity & Health Monitoring System
-        </p>
-        <button class="view-data-btn" onclick="openModal()">
-            View Dynamic Data
-        </button>
+    <!-- Login Page -->
+    <div class="login-page" id="loginPage">
+        <div class="login-container">
+            <h1>🔋 Battery Dynamic Data</h1>
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">Select Your Role to Access Data</p>
+            
+            <div class="role-selection">
+                <div class="role-btn" onclick="selectRole('user')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">👤</div>
+                    USER
+                </div>
+                <div class="role-btn" onclick="selectRole('recycler')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">♻️</div>
+                    RECYCLER
+                </div>
+                <div class="role-btn" onclick="selectRole('manufacturer')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🏭</div>
+                    MANUFACTURER
+                </div>
+                <div class="role-btn" onclick="selectRole('regulatory')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">📋</div>
+                    REGULATORY
+                </div>
+                <div class="role-btn" onclick="selectRole('service')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🔧</div>
+                    SERVICE PROVIDER
+                </div>
+            </div>
+            
+            <div class="credentials-form" id="credentialsForm">
+                <h3 style="margin-bottom: 15px; color: #333;">🔐 Authentication Required</h3>
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" class="form-input" placeholder="Enter User ID">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter Password">
+                </div>
+                <div class="error-message" id="errorMessage">❌ Incorrect User ID or Password. Please try again.</div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn" style="background: linear-gradient(135deg, #FF8C00, #FF6347); color: white; padding: 12px 30px; font-size: 16px;" id="accessButton">🔓 Access System</button>
+            </div>
+            
+            <!--<div style="margin-top: 25px; text-align: center; color: #666; font-size: 13px;">
+                <p><strong>Login Credentials:</strong></p>
+                <p style="margin: 5px 0;">Recycler: REC001 / ARAI01</p>
+                <p style="margin: 5px 0;">Manufacturer: MFG001 / ARAI02</p>
+                <p style="margin: 5px 0;">Regulatory: REG001 / ARAI03</p>
+                <p style="margin: 5px 0;">Service Provider: SVC001 / ARAI04</p>
+                <p style="margin-top: 15px; color: #888;">User role requires no authentication</p>
+            </div>-->
+        </div>
     </div>
 
-    <!-- Modal -->
-    <div id="dataModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2><span class="status-indicator"></span>Battery Dynamic Data</h2>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div class="header-section">
+                <h1><span class="status-indicator"></span>Battery Dynamic Data</h1>
+                <div class="role-badge" id="roleBadge">USER ACCESS</div>
+            </div>
             
-            <div class="data-field">
-                <label for="category">Battery Category:</label>
-                <input type="text" id="category" value="Automotive" disabled>
+            <div class="info-note" id="infoNote">
+                ✏️ <strong>Editable fields:</strong> You can modify highlighted fields and update the data.
             </div>
-
-            <!--<div class="data-field">
-                <label for="capacity">Rated Capacity:</label>
-                <input type="text" id="capacity" value="100Ah">
-            </div>-->
-
-            <div class="data-field">
-                <label for="status">Battery Status:</label>
-                <input type="text" id="status" value="Operational">
+            
+            <div id="dataFields">
+                <!-- Fields will be dynamically added here -->
             </div>
-
-            <div class="data-field">
-                <label for="soh">State Of Health (SOH):</label>
-                <input type="text" id="soh" value="90%">
+            
+            <div class="button-group" id="buttonGroup">
+                <!-- Buttons will be dynamically added here -->
             </div>
-
-            <div class="button-group">
-                <button class="update-btn" onclick="updateData()">Update Data</button>
-                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            </div>
-
-            <div class="last-updated" id="lastUpdated">
-                Last Updated: Never
-            </div>
+            
+            <div class="last-updated" id="lastUpdated">Last Updated: Never</div>
         </div>
     </div>
 
     <script>
-        // Store original values
-        let originalData = {
-            capacity: "100Ah",
-            status: "Operational",
-            soh: "90%"
+        let currentRole = '';
+        let isLoggedIn = false;
+        let sessionData = {};
+        
+        // Login credentials for all roles
+        const credentials = {
+            recycler: { userId: 'REC001', password: 'ARAI01' },
+            manufacturer: { userId: 'MFG001', password: 'ARAI02' },
+            regulatory: { userId: 'REG001', password: 'ARAI03' },
+            service: { userId: 'SVC001', password: 'ARAI04' }
         };
 
-        // Function to get real IST time
-        function getISTTime() {
-            const now = new Date();
-            // Create IST time using proper timezone conversion
-            const istTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+        // Default data for each role
+        const defaultData = {
+            user: [
+                { label: 'Battery Status', value: 'Operational', editable: false }
+            ],
+            recycler: [
+                { label: 'BMI + BIS', value: 'MY008 1DH800001', editable: false },
+                { label: 'Battery Category', value: 'Electric Vehicle battery', editable: true },
+                { label: 'Battery Status', value: 'Operational', editable: true },
+                { label: 'State of Health (SOH)', value: '80%', editable: false },
+                { label: 'Actual Disassembly Method', value: 'Standard Manual Disassembly & Full Separation', editable: true },
+                { label: 'Actual Circularity Method', value: 'Material Circularity Indicator (MCI)', editable: true },
+                { label: 'Date & Time Stamp', value: getCurrentTimestamp(), editable: true },
+                { label: 'Reserved Field 1', value: '-', editable: false },
+                { label: 'Reserved Field 2', value: '-', editable: false }
+            ],
+            manufacturer: [
+                { label: 'BMI + BIS', value: 'MY008 1DH800001', editable: false },
+                { label: 'Battery Category', value: 'Electric Vehicle battery', editable: false },
+                { label: 'Battery Status', value: 'Operational', editable: false },
+                { label: 'State of Health (SOH)', value: '80%', editable: false },
+                { label: 'Actual Disassembly Method', value: 'Standard Manual Disassembly & Full Separation', editable: false },
+                { label: 'Actual Circularity Method', value: 'Material Circularity Indicator (MCI)', editable: false },
+                { label: 'Date & Time Stamp', value: getCurrentTimestamp(), editable: false },
+                { label: 'Reserved Field 1', value: '-', editable: false },
+                { label: 'Reserved Field 2', value: '-', editable: false }
+            ],
+            regulatory: [
+                { label: 'BMI + BIS', value: 'MY008 1DH800001', editable: false },
+                { label: 'Battery Category', value: 'Electric Vehicle battery', editable: true },
+                { label: 'Battery Status', value: 'Operational', editable: true },
+                { label: 'State of Health (SOH)', value: '80%', editable: true },
+                { label: 'Actual Disassembly Method', value: 'Standard Manual Disassembly & Full Separation', editable: false },
+                { label: 'Actual Circularity Method', value: 'Material Circularity Indicator (MCI)', editable: false },
+                { label: 'Date & Time Stamp', value: getCurrentTimestamp(), editable: true },
+                { label: 'Reserved Field 1', value: '-', editable: false },
+                { label: 'Reserved Field 2', value: '-', editable: false }
+            ],
+            service: [
+                { label: 'BMI + BIS', value: 'MY008 1DH800001', editable: false },
+                { label: 'Battery Category', value: 'Electric Vehicle battery', editable: false },
+                { label: 'Battery Status', value: 'Operational', editable: true },
+                { label: 'State of Health (SOH)', value: '80%', editable: false },
+                { label: 'Date & Time Stamp', value: getCurrentTimestamp(), editable: true }
+            ]
+        };
+
+        function selectRole(role) {
+            currentRole = role;
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.role-btn').classList.add('selected');
             
-            // Format the time properly
-            const day = String(istTime.getDate()).padStart(2, '0');
-            const month = String(istTime.getMonth() + 1).padStart(2, '0');
-            const year = istTime.getFullYear();
-            const hours = String(istTime.getHours()).padStart(2, '0');
-            const minutes = String(istTime.getMinutes()).padStart(2, '0');
-            const seconds = String(istTime.getSeconds()).padStart(2, '0');
+            const credentialsForm = document.getElementById('credentialsForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const accessButton = document.getElementById('accessButton');
             
-            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+            if (role === 'user') {
+                // User role - no authentication needed
+                credentialsForm.style.display = 'none';
+                errorMessage.style.display = 'none';
+                document.getElementById('userId').value = '';
+                document.getElementById('password').value = '';
+                accessButton.textContent = '🔓 Access as User';
+                isLoggedIn = true;
+                setTimeout(() => {
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    loadRoleData();
+                }, 300);
+            } else {
+                // Other roles - require authentication
+                credentialsForm.style.display = 'block';
+                accessButton.textContent = '🔓 Authenticate & Access';
+                document.getElementById('userId').focus();
+            }
         }
 
-        function openModal() {
-            document.getElementById('dataModal').style.display = 'block';
+        function authenticate() {
+            if (currentRole === 'user') {
+                // User role already authenticated
+                return;
+            }
+            
+            if (!currentRole) {
+                <!--alert('Please select a role first');-->
+                return;
+            }
+            
+            const userId = document.getElementById('userId').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (!userId || !password) {
+                errorMessage.textContent = '❌ Please enter both User ID and Password';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            if (credentials[currentRole] && userId === credentials[currentRole].userId && password === credentials[currentRole].password) {
+                errorMessage.style.display = 'none';
+                isLoggedIn = true;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                loadRoleData();
+            } else {
+                errorMessage.textContent = '❌ Invalid credentials. Please try again.';
+                errorMessage.style.display = 'block';
+            }
         }
 
-        function closeModal() {
-            document.getElementById('dataModal').style.display = 'none';
-            // Reset to original values if cancelled
-            document.getElementById('capacity').value = originalData.capacity;
-            document.getElementById('status').value = originalData.status;
-            document.getElementById('soh').value = originalData.soh;
+        function loadRoleData() {
+            const dataFields = document.getElementById('dataFields');
+            dataFields.innerHTML = '';
+            
+            // Get stored data for this role, or use defaults
+            const storedData = getStoredData();
+            const roleData = storedData[currentRole] || defaultData[currentRole];
+            
+            document.getElementById('roleBadge').textContent = roleData[0].label.includes('BMI') ? 
+                currentRole.toUpperCase() + ' ACCESS' : 
+                currentRole.toUpperCase() + ' ACCESS';
+            
+            const infoNote = document.getElementById('infoNote');
+            const hasEditable = roleData.some(field => field.editable);
+            infoNote.innerHTML = hasEditable ? 
+                '✏️ <strong>Editable fields:</strong> You can modify highlighted fields and update the data.' :
+                '👁️ <strong>View Only:</strong> All fields are read-only for your role.';
+            
+            roleData.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'data-field';
+                fieldDiv.innerHTML = `
+                    <label for="${field.label}">${field.label}:</label>
+                    <input type="text" id="${field.label}" value="${escapeHtml(field.value)}" ${field.editable ? '' : 'disabled'}>
+                `;
+                dataFields.appendChild(fieldDiv);
+            });
+            
+            const buttonGroup = document.getElementById('buttonGroup');
+            buttonGroup.innerHTML = '';
+            
+            if (hasEditable) {
+                buttonGroup.innerHTML += '<button class="btn update-btn" onclick="updateData()">Update Data</button>';
+            }
+            <!--buttonGroup.innerHTML += '<button class="btn download-btn" onclick="downloadCSV()">Download CSV</button>';-->
+            buttonGroup.innerHTML += '<button class="btn back-btn" onclick="goBack()">Back to Login</button>';
+            
+            // Load timestamp
+            const timestamp = localStorage.getItem(`lastUpdated_${currentRole}`);
+            document.getElementById('lastUpdated').textContent = timestamp ? 
+                'Last Updated: ' + timestamp : 'Last Updated: Never';
         }
 
         function updateData() {
-            // Show confirmation dialog for CSV download
-            const confirmDownload = confirm("Before updating, you must download the current data as CSV file. Click OK to proceed with download, or Cancel to abort the update.");
+            const roleData = getStoredData();
+            const currentRoleData = roleData[currentRole] || defaultData[currentRole];
             
-            if (!confirmDownload) {
-                alert("Update cancelled. CSV download is mandatory before updating data.");
-                return;
-            }
-
-            // Generate and download CSV
-            downloadCSV();
-
-            // Update the data
-            originalData.capacity = document.getElementById('capacity').value;
-            originalData.status = document.getElementById('status').value;
-            originalData.soh = document.getElementById('soh').value;
-
-            // Update last updated time in IST
-            const istTimeString = getISTTime();
-            document.getElementById('lastUpdated').innerHTML = `Last Updated: ${istTimeString} IST`;
-
-            alert("Data updated successfully!");
-            closeModal();
+            // Update values from form inputs
+            currentRoleData.forEach(field => {
+                const input = document.getElementById(field.label);
+                if (input) {
+                    field.value = input.value.trim();
+                }
+            });
+            
+            // Save updated data
+            roleData[currentRole] = currentRoleData;
+            localStorage.setItem('batteryData', JSON.stringify(roleData));
+            
+            // Update timestamp
+            const timestamp = getCurrentTimestamp();
+            localStorage.setItem(`lastUpdated_${currentRole}`, timestamp);
+            document.getElementById('lastUpdated').textContent = 'Last Updated: ' + timestamp;
+            
+            <!--alert('✅ Data updated successfully! Download CSV to save changes.');-->
         }
-
+        
         function downloadCSV() {
-            const istTimeString = getISTTime();
+            const roleData = getStoredData();
+            const currentRoleData = roleData[currentRole] || defaultData[currentRole];
             
+            const timestamp = getCurrentTimestamp();
             const data = [
-                ['Field', 'Value'],
-                ['Battery Category', 'Automotive'],
-                ['Rated Capacity', document.getElementById('capacity').value],
-                ['Battery Status', document.getElementById('status').value],
-                ['State Of Health (SOH)', document.getElementById('soh').value],
-                ['Export Time (IST)', istTimeString + ' IST']
+                ['Field', 'Value', 'Role', 'Editable', 'Updated By'],
+                ['---', '---', '---', '---', '---']
             ];
-
+            
+            currentRoleData.forEach(field => {
+                const editable = field.editable ? 'Yes' : 'No';
+                data.push([field.label, field.value, currentRole.toUpperCase(), editable, currentRole.toUpperCase()]);
+            });
+            
+            data.push(['---', '---', '---', '---', '---']);
+            data.push(['Export Time (IST)', timestamp + ' IST', '', '', '']);
+            
             let csvContent = '';
             data.forEach(row => {
-                csvContent += row.join(',') + '\n';
+                csvContent += row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',') + '\n';
             });
-
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'battery_data_' + new Date().toISOString().slice(0,10) + '.csv';
+            a.download = `battery_dynamic_data_${currentRole}_${new Date().toISOString().slice(0,10)}.csv`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+            URL.revokeObjectURL(url);
+            
+           <!-- alert('📥 CSV file downloaded successfully!');-->
         }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('dataModal');
-            if (event.target == modal) {
-                closeModal();
+        
+        function goBack() {
+            {
+                document.getElementById('mainContent').style.display = 'none';
+                document.getElementById('loginPage').style.display = 'flex';
+                currentRole = '';
+                isLoggedIn = false;
+                document.querySelectorAll('.role-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                document.getElementById('credentialsForm').style.display = 'none';
+                document.getElementById('userId').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('errorMessage').style.display = 'none';
             }
         }
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
+        
+        function getStoredData() {
+            try {
+                const stored = localStorage.getItem('batteryData');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error('Error loading stored data:', e);
+            }
+            return {};
+        }
+        
+        function getCurrentTimestamp() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} IST`;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Event listeners
+        document.getElementById('accessButton').addEventListener('click', authenticate);
+        
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                authenticate();
+            }
+        });
+        
+        document.getElementById('userId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('password').focus();
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isLoggedIn) {
+                goBack();
             }
         });
     </script>
 </body>
 </html>
+
